@@ -81,18 +81,28 @@ class GeneralSettingsTableViewController: BasicStaticTableViewController {
         return uiSwitch
     }()
 
+    private lazy var encryptionBackendSegmentedControl: UISegmentedControl = {
+        let segmentedControl = UISegmentedControl(items: ["GPG", "Age"])
+        segmentedControl.sizeToFit()
+        segmentedControl.addTarget(self, action: #selector(encryptionBackendSwitchAction), for: .valueChanged)
+        return segmentedControl
+    }()
+
     override func viewDidLoad() {
         tableData = [
             // section 0
-            [[.title: "AboutRepository".localize(), .action: "segue", .link: "showAboutRepositorySegue"]],
+            [[.title: "Encryption", .action: "none"]],
 
             // section 1
+            [[.title: "AboutRepository".localize(), .action: "segue", .link: "showAboutRepositorySegue"]],
+
+            // section 2
             [
                 [.title: "RememberPgpKeyPassphrase".localize(), .action: "none"],
                 [.title: "RememberGitCredentialPassphrase".localize(), .action: "none"],
             ],
 
-            // section 2
+            // section 3
             [
                 [.title: "EnableGPGID".localize(), .action: "none"],
                 [.title: "ShowFolders".localize(), .action: "none"],
@@ -110,6 +120,10 @@ class GeneralSettingsTableViewController: BasicStaticTableViewController {
         cell.accessoryType = .none
         cell.selectionStyle = .none
         switch cell.textLabel!.text! {
+        case "Encryption":
+            cell.accessoryView = encryptionBackendSegmentedControl
+            let backend = Defaults.encryptionBackend
+            encryptionBackendSegmentedControl.selectedSegmentIndex = backend == .gpg ? 0 : 1
         case "AboutRepository".localize():
             cell.accessoryType = .disclosureIndicator
         case "HideUnknownFields".localize():
@@ -136,6 +150,16 @@ class GeneralSettingsTableViewController: BasicStaticTableViewController {
             break
         }
         return cell
+    }
+
+    @objc
+    func encryptionBackendSwitchAction(_ sender: UISegmentedControl) {
+        if sender.selectedSegmentIndex == 0 {
+            Defaults.encryptionBackend = .gpg
+        } else {
+            Defaults.encryptionBackend = .age
+        }
+        EncryptionManager.shared.uninitKeys()
     }
 
     private func addDetailButton(to cell: UITableViewCell, for uiSwitch: UISwitch, with action: Selector) {

@@ -51,3 +51,26 @@ public enum SSHKey: CryptographicKey {
         }
     }
 }
+
+public enum AgeKey: CryptographicKey {
+    case PUBLIC
+    case PRIVATE
+
+    public func getKeychainKey() -> String {
+        switch self {
+        case .PUBLIC:
+            return "agePublicKey"
+        case .PRIVATE:
+            return "agePrivateKey"
+        }
+    }
+
+    public func getFileSharingPath() -> String {
+        switch self {
+        case .PUBLIC:
+            return Globals.iTunesFileSharingAgePublic
+        case .PRIVATE:
+            return Globals.iTunesFileSharingAgePrivate
+        }
+    }
+}

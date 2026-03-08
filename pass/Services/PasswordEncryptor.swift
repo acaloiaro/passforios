@@ -8,10 +8,10 @@
 
 import passKit
 
-func encryptPassword(in controller: UIViewController, with password: Password, keyID: String? = nil, completion: @escaping (() -> Void)) {
+func encryptPassword(in controller: UIViewController, with password: Password, completion: @escaping (() -> Void)) {
     DispatchQueue.global(qos: .userInitiated).async {
         do {
-            _ = try PasswordStore.shared.add(password: password, keyID: keyID)
+            _ = try PasswordStore.shared.add(password: password, path: password.path)
             DispatchQueue.main.async {
                 completion()
             }
@@ -19,8 +19,8 @@ func encryptPassword(in controller: UIViewController, with password: Password, k
             DispatchQueue.main.async {
                 let alert = UIAlertController(title: "Cannot Encrypt Password", message: AppError.pgpPublicKeyNotFound(keyID: key).localizedDescription, preferredStyle: .alert)
                 alert.addAction(UIAlertAction.cancelAndPopView(controller: controller))
-                let selectKey = UIAlertAction.selectKey(controller: controller) { action in
-                    encryptPassword(in: controller, with: password, keyID: action.title, completion: completion)
+                let selectKey = UIAlertAction.selectKey(controller: controller) { _ in
+                    encryptPassword(in: controller, with: password, completion: completion)
                 }
                 alert.addAction(selectKey)
 

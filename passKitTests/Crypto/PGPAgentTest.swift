@@ -14,6 +14,7 @@ import XCTest
 final class PGPAgentTest: XCTestCase {
     private var keychain: KeyStore!
     private var pgpAgent: PGPAgent!
+    private var encryptionManager: EncryptionManager!
 
     private let testData = Data("Hello World!".utf8)
 
@@ -21,21 +22,27 @@ final class PGPAgentTest: XCTestCase {
         super.setUp()
         keychain = DictBasedKeychain()
         pgpAgent = PGPAgent(keyStore: keychain)
+        encryptionManager = EncryptionManager(keyStore: keychain)
         UserDefaults().removePersistentDomain(forName: "SharedDefaultsForPGPAgentTest")
         passKit.Defaults = DefaultsAdapter(defaults: UserDefaults(suiteName: "SharedDefaultsForPGPAgentTest")!, keyStore: DefaultsKeys())
     }
 
     override func tearDown() {
         keychain.removeAllContent()
+        encryptionManager.uninitKeys()
         UserDefaults().removePersistentDomain(forName: "SharedDefaultsForPGPAgentTest")
         super.tearDown()
     }
 
-    private func basicEncryptDecrypt(using pgpAgent: PGPAgent, keyID: String, encryptKeyID: String? = nil, requestPassphrase: @escaping (String) -> String = requestPGPKeyPassphrase, encryptInArmored: Bool = true, decryptFromArmored: Bool = true) throws -> Data? {
+    private func makeInterface(publicKey: String, privateKey: String) throws -> PGPInterface {
+        try GopenPGPInterface(publicArmoredKey: publicKey, privateArmoredKey: privateKey)
+    }
+
+    private func basicEncryptDecrypt(using pgpInterface: PGPInterface, keyID: String, encryptKeyID: String? = nil, passphrase: String = "passforios", encryptInArmored: Bool = true, decryptFromArmored: Bool = true) throws -> Data? {
         passKit.Defaults.encryptInArmored = encryptInArmored
-        let encryptedData = try pgpAgent.encrypt(plainData: testData, keyID: keyID)
+        let encryptedData = try pgpInterface.encrypt(plainData: testData, keyID: keyID)
         passKit.Defaults.encryptInArmored = decryptFromArmored
-        return try pgpAgent.decrypt(encryptedData: encryptedData, keyID: encryptKeyID ?? keyID, requestPGPKeyPassphrase: requestPassphrase)
+        return try pgpInterface.decrypt(encryptedData: encryptedData, keyID: encryptKeyID ?? keyID, passphrase: passphrase)
     }
 
     func testMultiKeys() throws {
@@ -46,16 +53,22 @@ final class PGPAgentTest: XCTestCase {
             keychain.removeAllContent()
             try importKeys(testKeyInfo.publicKeys, testKeyInfo.privateKeys)
             XCTAssert(pgpAgent.isPrepared)
-            try pgpAgent.initKeys()
+            let pgpInterface = try GopenPGPInterface(publicArmoredKey: testKeyInfo.publicKeys, privateArmoredKey: testKeyInfo.privateKeys)
+            for id in testKeyInfo.fingerprints {
+                XCTAssert(pgpInterface.containsPublicKey(with: id))
+                XCTAssert(pgpInterface.containsPrivateKey(with: id))
+            }
+        }
+        // Verify each key pair encrypts and decrypts correctly
+        for testSet in [RSA2048, RSA4096, ED25519, NISTP384] as [PGPTestSet] {
+            let pgpInterface = try makeInterface(publicKey: testSet.publicKey, privateKey: testSet.privateKey)
             try [
                 (true, true),
                 (true, false),
                 (false, true),
                 (false, false),
             ].forEach { encryptInArmored, decryptFromArmored in
-                for id in testKeyInfo.fingerprints {
-                    XCTAssertEqual(try basicEncryptDecrypt(using: pgpAgent, keyID: id, encryptInArmored: encryptInArmored, decryptFromArmored: decryptFromArmored), testData)
-                }
+                XCTAssertEqual(try basicEncryptDecrypt(using: pgpInterface, keyID: testSet.fingerprint, passphrase: testSet.passphrase, encryptInArmored: encryptInArmored, decryptFromArmored: decryptFromArmored), testData)
             }
         }
     }
@@ -74,15 +87,15 @@ final class PGPAgentTest: XCTestCase {
             keychain.removeAllContent()
             try importKeys(testKeyInfo.publicKey, testKeyInfo.privateKey)
             XCTAssert(pgpAgent.isPrepared)
-            try pgpAgent.initKeys()
-            XCTAssert(try pgpAgent.getKeyID().first!.lowercased().hasSuffix(testKeyInfo.fingerprint))
+            let pgpInterface = try makeInterface(publicKey: testKeyInfo.publicKey, privateKey: testKeyInfo.privateKey)
+            XCTAssert(pgpInterface.keyID.first!.lowercased().hasSuffix(testKeyInfo.fingerprint))
             try [
                 (true, true),
                 (true, false),
                 (false, true),
                 (false, false),
             ].forEach { encryptInArmored, decryptFromArmored in
-                XCTAssertEqual(try basicEncryptDecrypt(using: pgpAgent, keyID: testKeyInfo.fingerprint, encryptInArmored: encryptInArmored, decryptFromArmored: decryptFromArmored), testData)
+                XCTAssertEqual(try basicEncryptDecrypt(using: pgpInterface, keyID: testKeyInfo.fingerprint, passphrase: testKeyInfo.passphrase, encryptInArmored: encryptInArmored, decryptFromArmored: decryptFromArmored), testData)
             }
         }
     }
@@ -90,10 +103,10 @@ final class PGPAgentTest: XCTestCase {
     func testNoPrivateKey() throws {
         try KeyFileManager(keyType: PGPKey.PUBLIC, keyPath: "", keyHandler: keychain.add).importKey(from: RSA2048.publicKey)
         XCTAssertFalse(pgpAgent.isPrepared)
-        XCTAssertThrowsError(try pgpAgent.initKeys()) {
+        XCTAssertThrowsError(try encryptionManager.initKeys()) {
             XCTAssertEqual($0 as! AppError, AppError.keyImport)
         }
-        XCTAssertThrowsError(try basicEncryptDecrypt(using: pgpAgent, keyID: RSA2048.fingerprint)) {
+        XCTAssertThrowsError(try encryptionManager.encrypt(plainData: testData, path: "test.gpg")) {
             XCTAssertEqual($0 as! AppError, AppError.keyImport)
         }
     }
@@ -101,7 +114,7 @@ final class PGPAgentTest: XCTestCase {
     func testInterchangePublicAndPrivateKey() throws {
         try importKeys(RSA2048.privateKey, RSA2048.publicKey)
         XCTAssert(pgpAgent.isPrepared)
-        XCTAssertThrowsError(try basicEncryptDecrypt(using: pgpAgent, keyID: RSA2048.fingerprint)) {
+        XCTAssertThrowsError(try basicEncryptDecrypt(using: makeInterface(publicKey: RSA2048.privateKey, privateKey: RSA2048.publicKey), keyID: RSA2048.fingerprint)) {
             XCTAssert($0.localizedDescription.contains("gopenpgp: unable to add locked key to a keyring"))
         }
     }
@@ -109,7 +122,8 @@ final class PGPAgentTest: XCTestCase {
     func testIncompatibleKeyTypes() throws {
         try importKeys(ED25519.publicKey, RSA2048.privateKey)
         XCTAssert(pgpAgent.isPrepared)
-        XCTAssertThrowsError(try basicEncryptDecrypt(using: pgpAgent, keyID: ED25519.fingerprint, encryptKeyID: RSA2048.fingerprint)) {
+        let pgpInterface = try makeInterface(publicKey: ED25519.publicKey, privateKey: RSA2048.privateKey)
+        XCTAssertThrowsError(try basicEncryptDecrypt(using: pgpInterface, keyID: ED25519.fingerprint, encryptKeyID: RSA2048.fingerprint)) {
             XCTAssertEqual($0 as! AppError, AppError.keyExpiredOrIncompatible)
         }
     }
@@ -117,48 +131,39 @@ final class PGPAgentTest: XCTestCase {
     func testCorruptedKey() throws {
         try importKeys(RSA2048.publicKey.replacingOccurrences(of: "1", with: ""), RSA2048.privateKey)
         XCTAssert(pgpAgent.isPrepared)
-        XCTAssertThrowsError(try basicEncryptDecrypt(using: pgpAgent, keyID: RSA2048.fingerprint)) {
-            XCTAssert($0.localizedDescription.contains("Can't read keys. Invalid input."))
+        XCTAssertThrowsError(try encryptionManager.initKeys()) {
+            XCTAssertEqual($0 as! AppError, AppError.keyImport)
         }
     }
 
     func testUnsetKeys() throws {
         try importKeys(ED25519.publicKey, ED25519.privateKey)
         XCTAssert(pgpAgent.isPrepared)
-        XCTAssertEqual(try basicEncryptDecrypt(using: pgpAgent, keyID: ED25519.fingerprint), testData)
+        let pgpInterface = try makeInterface(publicKey: ED25519.publicKey, privateKey: ED25519.privateKey)
+        XCTAssertEqual(try basicEncryptDecrypt(using: pgpInterface, keyID: ED25519.fingerprint, passphrase: ED25519.passphrase), testData)
         keychain.removeContent(for: PGPKey.PUBLIC.getKeychainKey())
         keychain.removeContent(for: PGPKey.PRIVATE.getKeychainKey())
-        XCTAssertThrowsError(try basicEncryptDecrypt(using: pgpAgent, keyID: ED25519.fingerprint)) {
+        XCTAssertFalse(pgpAgent.isPrepared)
+        encryptionManager.uninitKeys()
+        XCTAssertThrowsError(try encryptionManager.encrypt(plainData: testData, path: "test.gpg")) {
             XCTAssertEqual($0 as! AppError, AppError.keyImport)
         }
     }
 
     func testNoDecryptionWithIncorrectPassphrase() throws {
         try importKeys(RSA2048.publicKey, RSA2048.privateKey)
-
-        var passphraseRequestCalledCount = 0
-        let provideCorrectPassphrase: (String) -> String = { _ in
-            passphraseRequestCalledCount += 1
-            return requestPGPKeyPassphrase(keyID: RSA2048.fingerprint)
-        }
-        let provideIncorrectPassphrase: (String) -> String = { _ in
-            passphraseRequestCalledCount += 1
-            return "incorrect passphrase"
-        }
+        let pgpInterface = try makeInterface(publicKey: RSA2048.publicKey, privateKey: RSA2048.privateKey)
 
         // Provide the correct passphrase.
-        XCTAssertEqual(try basicEncryptDecrypt(using: pgpAgent, keyID: RSA2048.fingerprint, requestPassphrase: provideCorrectPassphrase), testData)
-        XCTAssertEqual(passphraseRequestCalledCount, 1)
+        XCTAssertEqual(try basicEncryptDecrypt(using: pgpInterface, keyID: RSA2048.fingerprint, passphrase: RSA2048.passphrase), testData)
 
         // Provide the wrong passphrase.
-        XCTAssertThrowsError(try basicEncryptDecrypt(using: pgpAgent, keyID: RSA2048.fingerprint, requestPassphrase: provideIncorrectPassphrase)) {
+        XCTAssertThrowsError(try basicEncryptDecrypt(using: pgpInterface, keyID: RSA2048.fingerprint, passphrase: "incorrect passphrase")) {
             XCTAssertEqual($0 as! AppError, AppError.wrongPassphrase)
         }
-        XCTAssertEqual(passphraseRequestCalledCount, 2)
 
-        // Ask for the passphrase because the previous decryption has failed.
-        XCTAssertEqual(try basicEncryptDecrypt(using: pgpAgent, keyID: RSA2048.fingerprint, requestPassphrase: provideCorrectPassphrase), testData)
-        XCTAssertEqual(passphraseRequestCalledCount, 3)
+        // Provide the correct passphrase again.
+        XCTAssertEqual(try basicEncryptDecrypt(using: pgpInterface, keyID: RSA2048.fingerprint, passphrase: RSA2048.passphrase), testData)
     }
 
     private func importKeys(_ publicKey: String, _ privateKey: String) throws {

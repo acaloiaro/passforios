@@ -1,13 +1,7 @@
-//
-//  PGPInterface.swift
-//  passKit
-//
-//  Created by Danny Moesch on 08.09.19.
-//  Copyright © 2019 Bob Sun. All rights reserved.
-//
-
-protocol PGPInterface {
+protocol PGPInterface: EncryptionInterface {
     func decrypt(encryptedData: Data, keyID: String?, passphrase: String) throws -> Data?
+
+    func decrypt(encryptedData: Data, passphrase: String) throws -> Data?
 
     func encrypt(plainData: Data, keyID: String?) throws -> Data
 

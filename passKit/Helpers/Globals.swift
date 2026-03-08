@@ -35,6 +35,8 @@ public final class Globals {
     public static let iTunesFileSharingPGPPublic = iTunesFileSharingPath + "/gpg_key.pub"
     public static let iTunesFileSharingPGPPrivate = iTunesFileSharingPath + "/gpg_key"
     public static let iTunesFileSharingSSHPrivate = iTunesFileSharingPath + "/ssh_key"
+    public static let iTunesFileSharingAgePublic = iTunesFileSharingPath + "/age_key.pub"
+    public static let iTunesFileSharingAgePrivate = iTunesFileSharingPath + "/age_key"
 
     public static let gitPassword = "gitPassword"
     public static let gitSSHPrivateKeyPassphrase = "gitSSHPrivateKeyPassphrase"

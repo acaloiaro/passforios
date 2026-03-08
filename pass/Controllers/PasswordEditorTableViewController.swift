@@ -356,7 +356,8 @@ class PasswordEditorTableViewController: UITableViewController {
             return ("", "")
         }
         let name = url.lastPathComponent
-        let path = url.appendingPathExtension("gpg").path
+        let ext = Defaults.encryptionBackend.fileExtension
+        let path = url.appendingPathExtension(ext).path
         return (name, path)
     }
 

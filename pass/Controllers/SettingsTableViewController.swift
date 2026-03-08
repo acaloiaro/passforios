@@ -6,6 +6,7 @@
 //  Copyright © 2017 Bob Sun. All rights reserved.
 //
 
+import AgeKit
 import CoreData
 import passKit
 import SVProgressHUD
@@ -14,6 +15,7 @@ import YubiKit
 
 class SettingsTableViewController: UITableViewController, UITabBarControllerDelegate {
     @IBOutlet var pgpKeyTableViewCell: UITableViewCell!
+    @IBOutlet var ageKeyTableViewCell: UITableViewCell!
     @IBOutlet var passcodeTableViewCell: UITableViewCell!
     @IBOutlet var passwordRepositoryTableViewCell: UITableViewCell!
     var setPasscodeLockAlert: UIAlertController?
@@ -33,26 +35,64 @@ class SettingsTableViewController: UITableViewController, UITabBarControllerDele
         savePGPKey(using: sourceController)
     }
 
+    @IBAction
+    private func saveAgeKey(segue: UIStoryboardSegue) {
+        guard let sourceController = segue.source as? AgeKeyImporter, sourceController.isReadyToUse() else {
+            return
+        }
+        saveAgeKey(using: sourceController)
+    }
+
     private func savePGPKey(using keyImporter: PGPKeyImporter) {
         SVProgressHUD.setDefaultMaskType(.black)
         SVProgressHUD.setDefaultStyle(.light)
         SVProgressHUD.show(withStatus: "FetchingPgpKey".localize())
-        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             Defaults.pgpKeySource = type(of: keyImporter).keySource
             do {
                 // Remove exiting passphrase
                 AppKeychain.shared.removeAllContent(withPrefix: Globals.pgpKeyPassphrase)
                 try keyImporter.importKeys()
-                try PGPAgent.shared.initKeys()
+                EncryptionManager.shared.uninitKeys()
                 DispatchQueue.main.async {
-                    self.setPGPKeyTableViewCellDetailText()
+                    self?.setCryptographicKeyTableViewCellDetailText()
                     SVProgressHUD.showSuccess(withStatus: "Success".localize())
                     SVProgressHUD.dismiss(withDelay: 1)
                     keyImporter.doAfterImport()
                 }
             } catch {
                 DispatchQueue.main.async {
-                    self.pgpKeyTableViewCell.detailTextLabel?.text = "NotSet".localize()
+                    self?.pgpKeyTableViewCell.detailTextLabel?.text = "NotSet".localize()
+                    guard let self else {
+                        return
+                    }
+                    Utils.alert(title: "Error".localize(), message: error.localizedDescription, controller: self, completion: nil)
+                }
+            }
+        }
+    }
+
+    private func saveAgeKey(using keyImporter: AgeKeyImporter) {
+        SVProgressHUD.setDefaultMaskType(.black)
+        SVProgressHUD.setDefaultStyle(.light)
+        SVProgressHUD.show(withStatus: "AgeKey".localize()) // Using "AgeKey" as a placeholder status for now
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            Defaults.ageKeySource = type(of: keyImporter).keySource
+            do {
+                try keyImporter.importKeys()
+                EncryptionManager.shared.uninitKeys()
+                DispatchQueue.main.async {
+                    self?.setCryptographicKeyTableViewCellDetailText()
+                    SVProgressHUD.showSuccess(withStatus: "Success".localize())
+                    SVProgressHUD.dismiss(withDelay: 1)
+                    keyImporter.doAfterImport()
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self?.ageKeyTableViewCell.detailTextLabel?.text = "NotSet".localize()
+                    guard let self else {
+                        return
+                    }
                     Utils.alert(title: "Error".localize(), message: error.localizedDescription, controller: self, completion: nil)
                 }
             }
@@ -68,7 +108,7 @@ class SettingsTableViewController: UITableViewController, UITabBarControllerDele
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(actOnPasswordStoreErasedNotification), name: .passwordStoreErased, object: nil)
         passwordRepositoryTableViewCell.detailTextLabel?.text = Defaults.gitURL.host
-        setPGPKeyTableViewCellDetailText()
+        setCryptographicKeyTableViewCellDetailText()
         setPasscodeLockCell()
     }
 
@@ -86,19 +126,27 @@ class SettingsTableViewController: UITableViewController, UITabBarControllerDele
         }
     }
 
-    private func setPGPKeyTableViewCellDetailText() {
-        var label = "NotSet".localize()
-
-        let keyID = (try? PGPAgent.shared.getShortKeyID()) ?? []
-        if keyID.count == 1 {
-            label = keyID.first ?? ""
-        } else if keyID.count > 1 {
-            label = "Multiple"
+    private func setCryptographicKeyTableViewCellDetailText() {
+        // PGP Key
+        var pgpLabel = "NotSet".localize()
+        let pgpKeyID = (try? PGPAgent.shared.getShortKeyID()) ?? []
+        if pgpKeyID.count == 1 {
+            pgpLabel = pgpKeyID.first ?? ""
+        } else if pgpKeyID.count > 1 {
+            pgpLabel = "Multiple"
         }
         if Defaults.isYubiKeyEnabled {
-            label += "+YubiKey"
+            pgpLabel += "+YubiKey"
         }
-        pgpKeyTableViewCell.detailTextLabel?.text = label
+        pgpKeyTableViewCell.detailTextLabel?.text = pgpLabel
+
+        // Age Key
+        var ageLabel = "NotSet".localize()
+        if let privateKey = keychain.get(for: AgeKey.PRIVATE.getKeychainKey()),
+           let publicKey = try? Age.derivePublicKey(from: privateKey) {
+            ageLabel = String(publicKey.suffix(8)).uppercased()
+        }
+        ageKeyTableViewCell.detailTextLabel?.text = ageLabel
     }
 
     private func setPasswordRepositoryTableViewCellDetailText() {
@@ -114,7 +162,7 @@ class SettingsTableViewController: UITableViewController, UITabBarControllerDele
 
     @objc
     func actOnPasswordStoreErasedNotification() {
-        setPGPKeyTableViewCellDetailText()
+        setCryptographicKeyTableViewCellDetailText()
         setPasswordRepositoryTableViewCellDetailText()
         setPasscodeLockCell()
     }
@@ -139,6 +187,8 @@ class SettingsTableViewController: UITableViewController, UITabBarControllerDele
             }
         } else if cell == pgpKeyTableViewCell {
             showPGPKeyActionSheet()
+        } else if cell == ageKeyTableViewCell {
+            showAgeKeyActionSheet()
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -169,27 +219,19 @@ class SettingsTableViewController: UITableViewController, UITabBarControllerDele
             }
         )
 
-        if isReadyToUse() {
-            optionMenu.addAction(
-                UIAlertAction(title: "\(Self.menuLabel) (\("Import".localize()))", style: .default) { _ in
-                    self.saveImportedKeys()
-                }
-            )
-        } else {
-            optionMenu.addAction(
-                UIAlertAction(title: "\(Self.menuLabel) (\("Tips".localize()))", style: .default) { _ in
-                    let title = "Tips".localize()
-                    let message = "PgpCopyPublicAndPrivateKeyToPass.".localize()
-                    Utils.alert(title: title, message: message, controller: self)
-                }
-            )
-        }
+        optionMenu.addAction(
+            UIAlertAction(title: "\(Self.menuLabel) (\("Tips".localize()))", style: .default) { _ in
+                let title = "Tips".localize()
+                let message = "PgpCopyPublicAndPrivateKeyToPass.".localize()
+                Utils.alert(title: title, message: message, controller: self)
+            }
+        )
 
         if YubiKitDeviceCapabilities.supportsISO7816NFCTags {
             optionMenu.addAction(
                 UIAlertAction(title: Defaults.isYubiKeyEnabled ? "✓ YubiKey" : "YubiKey", style: .default) { _ in
                     Defaults.isYubiKeyEnabled.toggle()
-                    self.setPGPKeyTableViewCellDetailText()
+                    self.setCryptographicKeyTableViewCellDetailText()
                 }
             )
         }
@@ -200,8 +242,8 @@ class SettingsTableViewController: UITableViewController, UITabBarControllerDele
                     let alert = UIAlertController.removeConfirmationAlert(title: "RemovePgpKeys".localize(), message: "") { _ in
                         self.keychain.removeContent(for: PGPKey.PUBLIC.getKeychainKey())
                         self.keychain.removeContent(for: PGPKey.PRIVATE.getKeychainKey())
-                        PGPAgent.shared.uninitKeys()
-                        self.pgpKeyTableViewCell.detailTextLabel?.text = "NotSet".localize()
+                        EncryptionManager.shared.uninitKeys() // Uninitialize to force re-init with new keys
+                        self.setCryptographicKeyTableViewCellDetailText() // Update the PGP key cell
                         Defaults.pgpKeySource = nil
                     }
                     self.present(alert, animated: true, completion: nil)
@@ -212,6 +254,98 @@ class SettingsTableViewController: UITableViewController, UITabBarControllerDele
         optionMenu.popoverPresentationController?.sourceView = pgpKeyTableViewCell
         optionMenu.popoverPresentationController?.sourceRect = pgpKeyTableViewCell.bounds
         present(optionMenu, animated: true)
+    }
+
+    func showAgeKeyActionSheet() {
+        let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        optionMenu.addAction(
+            UIAlertAction(title: AgeKeyArmorImportTableViewController.label, style: .default) { _ in
+                self.performSegue(withIdentifier: "setAgeKeyByASCIISegue", sender: self)
+            }
+        )
+        optionMenu.addAction(
+            UIAlertAction(title: "GenerateAgeKey".localize(), style: .default) { _ in
+                self.handleGenerateAgeKey()
+            }
+        )
+        if Defaults.ageKeySource != nil {
+            optionMenu.addAction(
+                UIAlertAction(title: "RemoveAgeKeys".localize(), style: .destructive) { _ in
+                    let alert = UIAlertController.removeConfirmationAlert(title: "RemoveAgeKeys".localize(), message: "AgeKeyWarning.".localize()) { _ in
+                        self.keychain.removeContent(for: AgeKey.PUBLIC.getKeychainKey())
+                        self.keychain.removeContent(for: AgeKey.PRIVATE.getKeychainKey())
+                        EncryptionManager.shared.uninitKeys() // Uninitialize to force re-init with new keys
+                        self.setCryptographicKeyTableViewCellDetailText() // Update the Age key cell
+                        Defaults.ageKeySource = nil
+                    }
+                    self.present(alert, animated: true, completion: nil)
+                }
+            )
+        }
+        optionMenu.addAction(UIAlertAction.cancel())
+        optionMenu.popoverPresentationController?.sourceView = ageKeyTableViewCell
+        optionMenu.popoverPresentationController?.sourceRect = ageKeyTableViewCell.bounds
+        present(optionMenu, animated: true)
+    }
+
+    private func handleGenerateAgeKey() {
+        if Defaults.ageKeySource != nil {
+            let confirmAlert = UIAlertController(
+                title: "ReplaceAgeKey".localize(),
+                message: "AgeKeyWarning.".localize(),
+                preferredStyle: .alert
+            )
+            confirmAlert.addAction(UIAlertAction(title: "Cancel".localize(), style: .cancel))
+            confirmAlert.addAction(UIAlertAction(title: "Replace".localize(), style: .destructive) { _ in
+                self.generateAndSaveAgeKey()
+            })
+            present(confirmAlert, animated: true)
+        } else {
+            generateAndSaveAgeKey()
+        }
+    }
+
+    private func generateAndSaveAgeKey() {
+        SVProgressHUD.setDefaultMaskType(.black)
+        SVProgressHUD.setDefaultStyle(.light)
+        SVProgressHUD.show(withStatus: "GeneratingAgeKey.".localize())
+
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            do {
+                let identity = AgeKit.Age.X25519Identity.generate()
+                let privateKey = identity.string
+                let publicKey = identity.recipient.string
+
+                try KeyFileManager.PrivateAge.importKey(from: privateKey)
+                EncryptionManager.shared.uninitKeys()
+                Defaults.ageKeySource = .ageGenerated
+
+                DispatchQueue.main.async {
+                    self?.setCryptographicKeyTableViewCellDetailText()
+                    SVProgressHUD.showSuccess(withStatus: "Success".localize())
+                    SVProgressHUD.dismiss(withDelay: 1)
+
+                    let alert = UIAlertController(
+                        title: "AgeKeyGenerated".localize(),
+                        message: "\("PublicKey".localize()):\n\(publicKey)",
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "Ok".localize(), style: .default))
+                    alert.addAction(UIAlertAction(title: "CopyPublicKey".localize(), style: .default) { _ in
+                        SecurePasteboard.shared.copy(textToCopy: publicKey, expirationTime: 0)
+                    })
+                    self?.present(alert, animated: true)
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    SVProgressHUD.dismiss()
+                    guard let self else {
+                        return
+                    }
+                    Utils.alert(title: "Error".localize(), message: error.localizedDescription, controller: self, completion: nil)
+                }
+            }
+        }
     }
 
     func showPasscodeActionSheet() {

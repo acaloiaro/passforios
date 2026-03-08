@@ -70,50 +70,49 @@ struct GopenPGPInterface: PGPInterface {
         privateKeys.keys.contains { key in key.hasSuffix(keyID.lowercased()) }
     }
 
-    func decrypt(encryptedData: Data, keyID: String?, passphrase: String) throws -> Data? {
-        let key: CryptoKey? = {
-            if let keyID {
-                return privateKeys.first(where: { key, _ in key.hasSuffix(keyID.lowercased()) })?.value
-            }
-            return privateKeys.first?.value
-        }()
+    func decrypt(encryptedData: Data) throws -> Data? {
+        // Here we assume that the passphrase is empty.
+        // The passphrase will be provided by the UI.
+        try decrypt(encryptedData: encryptedData, passphrase: "")
+    }
 
-        guard let privateKey = key else {
+    func decrypt(encryptedData: Data, passphrase: String) throws -> Data? {
+        guard !privateKeys.isEmpty else {
             throw AppError.decryption
         }
 
-        do {
-            var isLocked: ObjCBool = false
-            try privateKey.isLocked(&isLocked)
-            var unlockedKey: CryptoKey!
-            if isLocked.boolValue {
-                unlockedKey = try privateKey.unlock(passphrase.data(using: .utf8))
-            } else {
-                unlockedKey = privateKey
-            }
-            var error: NSError?
-
-            guard let keyRing = CryptoNewKeyRing(unlockedKey, &error) else {
-                guard error == nil else {
-                    throw error!
+        var lastError: Error = AppError.decryption
+        for (_, privateKey) in privateKeys {
+            do {
+                var isLocked: ObjCBool = false
+                try privateKey.isLocked(&isLocked)
+                var unlockedKey: CryptoKey!
+                if isLocked.boolValue {
+                    unlockedKey = try privateKey.unlock(passphrase.data(using: .utf8))
+                } else {
+                    unlockedKey = privateKey
                 }
-                throw AppError.decryption
-            }
+                var error: NSError?
 
-            let message = createPGPMessage(from: encryptedData)
-            return try keyRing.decrypt(message, verifyKey: nil, verifyTime: 0).data
-        } catch {
-            throw Self.errorMapping[error.localizedDescription, default: error]
+                guard let keyRing = CryptoNewKeyRing(unlockedKey, &error) else {
+                    if let error {
+                        throw error
+                    }
+                    throw AppError.decryption
+                }
+
+                let message = createPGPMessage(from: encryptedData)
+                return try keyRing.decrypt(message, verifyKey: nil, verifyTime: 0).data
+            } catch {
+                lastError = error
+                continue
+            }
         }
+        throw Self.errorMapping[lastError.localizedDescription, default: lastError]
     }
 
-    func encrypt(plainData: Data, keyID: String?) throws -> Data {
-        let key: CryptoKey? = {
-            if let keyID {
-                return publicKeys.first(where: { key, _ in key.hasSuffix(keyID.lowercased()) })?.value
-            }
-            return publicKeys.first?.value
-        }()
+    func encrypt(plainData: Data, recipient: String) throws -> Data {
+        let key: CryptoKey? = publicKeys.first(where: { key, _ in key.hasSuffix(recipient.lowercased()) })?.value
 
         guard let publicKey = key else {
             throw AppError.encryption
@@ -140,12 +139,68 @@ struct GopenPGPInterface: PGPInterface {
         return encryptedData.getBinary()!
     }
 
+    func getRecipient(from path: String) -> String? {
+        if let recipient = findGPGID(for: path) {
+            return recipient
+        }
+        return publicKeys.keys.first
+    }
+
+    private func findGPGID(for path: String) -> String? {
+        let storeURL = Globals.repositoryURL
+        var currentPath = (path as NSString).deletingLastPathComponent
+
+        while !currentPath.isEmpty {
+            let gpgIDFile = storeURL
+                .appendingPathComponent(currentPath)
+                .appendingPathComponent(".gpg-id")
+
+            let recipients = readRecipients(from: gpgIDFile)
+            if let match = matchingRecipient(from: recipients) {
+                return match
+            }
+
+            currentPath = (currentPath as NSString).deletingLastPathComponent
+        }
+
+        let rootGPGIDFile = storeURL.appendingPathComponent(".gpg-id")
+        let recipients = readRecipients(from: rootGPGIDFile)
+        return matchingRecipient(from: recipients)
+    }
+
+    private func readRecipients(from fileURL: URL) -> [String] {
+        guard let contents = try? String(contentsOf: fileURL, encoding: .utf8) else {
+            return []
+        }
+        return contents.splitByNewline()
+            .filter { !$0.isEmpty && !$0.hasPrefix("#") }
+            .map(\.trimmed)
+    }
+
+    private func matchingRecipient(from recipients: [String]) -> String? {
+        if recipients.isEmpty {
+            return nil
+        }
+        // Prefer a recipient for which we hold a private key (decryption)
+        return recipients.first { containsPrivateKey(with: $0) }
+            ?? recipients.first // fallback for encryption
+    }
+
     var keyID: [String] {
         publicKeys.keys.map { $0.uppercased() }
     }
 
     var shortKeyID: [String] {
         publicKeys.keys.map { $0.suffix(8).uppercased() }
+    }
+
+    func decrypt(encryptedData: Data, keyID _: String?, passphrase: String) throws -> Data? {
+        try decrypt(encryptedData: encryptedData, passphrase: passphrase)
+    }
+
+    func encrypt(plainData: Data, keyID: String?) throws -> Data {
+        let recipient = keyID ?? publicKeys.keys.first ?? ""
+        return try encrypt(plainData: plainData, recipient: recipient)
     }
 }
 
