@@ -8,7 +8,7 @@
 
 import Gopenpgp
 
-struct GopenPGPInterface: PGPInterface {
+struct GopenPGPInterface: GPGInterface, PGPInterface {
     private static let errorMapping: [String: Error] = [
         "gopenpgp: error in unlocking key: openpgp: invalid data: private key checksum failure": AppError.wrongPassphrase,
         "gopenpgp: error in reading message: openpgp: incorrect key": AppError.keyExpiredOrIncompatible,
@@ -70,13 +70,14 @@ struct GopenPGPInterface: PGPInterface {
         privateKeys.keys.contains { key in key.hasSuffix(keyID.lowercased()) }
     }
 
-    func decrypt(encryptedData: Data, keyID: String?, passphrase: String) throws -> Data? {
-        let key: CryptoKey? = {
-            if let keyID {
-                return privateKeys.first(where: { key, _ in key.hasSuffix(keyID.lowercased()) })?.value
-            }
-            return privateKeys.first?.value
-        }()
+    func decrypt(encryptedData: Data) throws -> Data? {
+        // Here we assume that the passphrase is empty.
+        // The passphrase will be provided by the UI.
+        try decrypt(encryptedData: encryptedData, passphrase: "")
+    }
+
+    func decrypt(encryptedData: Data, passphrase: String) throws -> Data? {
+        let key: CryptoKey? = privateKeys.first?.value
 
         guard let privateKey = key else {
             throw AppError.decryption
@@ -107,13 +108,8 @@ struct GopenPGPInterface: PGPInterface {
         }
     }
 
-    func encrypt(plainData: Data, keyID: String?) throws -> Data {
-        let key: CryptoKey? = {
-            if let keyID {
-                return publicKeys.first(where: { key, _ in key.hasSuffix(keyID.lowercased()) })?.value
-            }
-            return publicKeys.first?.value
-        }()
+    func encrypt(plainData: Data, recipient: String) throws -> Data {
+        let key: CryptoKey? = publicKeys.first(where: { key, _ in key.hasSuffix(recipient.lowercased()) })?.value
 
         guard let publicKey = key else {
             throw AppError.encryption
@@ -140,12 +136,31 @@ struct GopenPGPInterface: PGPInterface {
         return encryptedData.getBinary()!
     }
 
+    func getRecipient(from path: String) -> String? {
+        // for gpg, the recipient is the gpg-id, which is part of the path
+        let pathComponents = path.split(separator: "/")
+        if let gpgID = pathComponents.first(where: { $0.hasSuffix(".gpg") }) {
+            return String(gpgID.dropLast(4))
+        }
+        return nil
+    }
+
     var keyID: [String] {
         publicKeys.keys.map { $0.uppercased() }
     }
 
     var shortKeyID: [String] {
         publicKeys.keys.map { $0.suffix(8).uppercased() }
+    }
+
+    // PGPInterface compatibility methods
+    func decrypt(encryptedData: Data, keyID _: String?, passphrase: String) throws -> Data? {
+        try decrypt(encryptedData: encryptedData, passphrase: passphrase)
+    }
+
+    func encrypt(plainData: Data, keyID: String?) throws -> Data {
+        let recipient = keyID ?? publicKeys.keys.first ?? ""
+        return try encrypt(plainData: plainData, recipient: recipient)
     }
 }
 

@@ -21,6 +21,8 @@ public enum AppError: Error, Equatable {
     case gitPushNotSuccessful
     case pgpPublicKeyNotFound(keyID: String)
     case pgpPrivateKeyNotFound(keyID: String)
+    case agePublicKeyNotFound(keyID: String)
+    case agePrivateKeyNotFound(keyID: String)
     case yubiKey(YubiKeyError)
     case passwordFileNotFound(path: String)
     case keyExpiredOrIncompatible
@@ -56,7 +58,7 @@ extension AppError: LocalizedError {
         switch self {
         case let .readingFile(name), let .repositoryBranchNotFound(name), let .repositoryRemoteBranchNotFound(name):
             return localizationKey.localize(name)
-        case let .pgpPrivateKeyNotFound(keyID), let .pgpPublicKeyNotFound(keyID):
+        case let .agePrivateKeyNotFound(keyID), let .agePublicKeyNotFound(keyID), let .pgpPrivateKeyNotFound(keyID), let .pgpPublicKeyNotFound(keyID):
             return localizationKey.localize(keyID)
         case let .yubiKey(error):
             return error.errorDescription

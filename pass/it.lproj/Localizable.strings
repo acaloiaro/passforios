@@ -39,9 +39,10 @@
 "CannotAddPassword"                                 = "Impossibile aggiungere la password";
 "WrongPassphrase"                                   = "Password errata";
 "MakeSurePgpAndGitProperlySet."                     = "Assicurarsi che la chiave PGP e il server Git siano configurati correttamente.";
+"EncryptionBackendNotConfigured."                   = "Il backend di crittografia non è configurato. Configura le tue chiavi PGP o Age nelle Impostazioni.";
 "RecoverySuggestion."                               = "Suggerimento: è stata rimossa la password errata, riprovare.";
 "NSURLFileAllocatedSizeKeyShouldAlwaysReturnValue." = "Cosa? NSURLFileAllocatedSizeKey Dovrebbe sempre restituire un valore.";
-"NoProperPassRepo."                                 = "Il repository non contiene un file .gpg-id. Impostarlo correttamente eseguendo 'pass init', poi riprovare a caricarlo nell'app.";
+"NoProperPassRepo."                                 = "Il repository non contiene un file .gpg-id o .age-recipients. Impostarlo correttamente eseguendo 'pass init' (per GPG) o creando un file .age-recipients (per Age), poi riprovare a caricarlo nell'app.";
 
 // Settings
 "PasswordGeneratorFlavor"           = "Stile";
@@ -132,7 +133,7 @@
 
 // PGP
 "Decrypting"                        = "Decriptazione";
-"PgpKeyNotSet."                     = "La chiave PGP non è impostata. Impostare la chiave PGP.";
+"EncryptionKeyNotSet."              = "La chiave di crittografia non è impostata. Si prega di impostare prima la chiave di crittografia.";
 "FillInPgpPassphrase."              = "Inserire la password della chiave PGP privata.";
 "WantToSavePassphrase?"             = "Salvare la password?";
 "CannotSavePgpKey"                  = "Impossibile salvare la chiave PGP";
@@ -163,6 +164,7 @@
 
 // Git signature
 "NotSet"                = "Non impostata";
+"Set"                   = "Impostata";
 "InvalidNameOrEmail"    = "Nome o email non validi";
 
 // Erase password store

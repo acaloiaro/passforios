@@ -187,6 +187,10 @@
 		DC037CBC1E4DD47B00609409 /* TextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DC037CBA1E4DD47B00609409 /* TextFieldTableViewCell.xib */; };
 		DC037CBF1E4ED4E100609409 /* TextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC037CBD1E4ED4E100609409 /* TextViewTableViewCell.swift */; };
 		DC037CC01E4ED4E100609409 /* TextViewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DC037CBE1E4ED4E100609409 /* TextViewTableViewCell.xib */; };
+		DC037CC21E4DD1A500609409 /* AgeKeyImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC037CC11E4DD1A500609409 /* AgeKeyImporter.swift */; };
+		DC037CC41E4DD1A500609409 /* AgeKeyArmorImportTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC037CC31E4DD1A500609409 /* AgeKeyArmorImportTableViewController.swift */; };
+		DC0A08892F5DEABB00D9FE2B /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		DC0A088A2F5DEABB00D9FE2B /* ObjectiveGit in Frameworks */ = {isa = PBXBuildFile; productRef = 30ED1776276F8842009BA876 /* ObjectiveGit */; };
 		DC0F7692283C00220042DA74 /* passKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A26075781EEC6F34005DB03E /* passKit.framework */; };
 		DC193FFA1E49B4430077E0A3 /* AdvancedSettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC193FF91E49B4430077E0A3 /* AdvancedSettingsTableViewController.swift */; };
 		DC30F83829BED4E2001EB12B /* PasswordGeneratorUISwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC30F83729BED4E2001EB12B /* PasswordGeneratorUISwitch.swift */; };
@@ -217,6 +221,13 @@
 		DCD3C65E1EFB9BB400CBE842 /* SettingsSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD3C65D1EFB9BB400CBE842 /* SettingsSplitViewController.swift */; };
 		DCDDEAB01E4639F300F68193 /* LabelTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCDDEAAF1E4639F300F68193 /* LabelTableViewCell.xib */; };
 		DCDDEAB31E4896BF00F68193 /* PasswordDetailTitleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDDEAB11E4896BF00F68193 /* PasswordDetailTitleTableViewCell.swift */; };
+		DCE93CA72F01D0C2008F738B /* AgeKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCE93CA62F01D0C2008F738B /* AgeKit */; };
+		DCE93CA92F01D0CC008F738B /* AgeKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCE93CA82F01D0CC008F738B /* AgeKit */; };
+		DCE93CAB2F01DDE7008F738B /* EncryptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE93CAA2F01DDE7008F738B /* EncryptionManager.swift */; };
+		DCE93CB02F01DE56008F738B /* GPGInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE93CAC2F01DE56008F738B /* GPGInterface.swift */; };
+		DCE93CB12F01DE56008F738B /* AgeInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE93CAD2F01DE56008F738B /* AgeInterface.swift */; };
+		DCE93CB22F01DE56008F738B /* EncryptionInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE93CAE2F01DE56008F738B /* EncryptionInterface.swift */; };
+		DCE93CB32F01DE56008F738B /* Age.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE93CAF2F01DE56008F738B /* Age.swift */; };
 		DCFB779E1E4F40C7008DE471 /* FillPasswordTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFB779C1E4F40C7008DE471 /* FillPasswordTableViewCell.swift */; };
 		DCFB779F1E4F40C7008DE471 /* FillPasswordTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCFB779D1E4F40C7008DE471 /* FillPasswordTableViewCell.xib */; };
 		DCFB77A31E500D9C008DE471 /* PasswordDetailTitleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCFB77A21E500D9C008DE471 /* PasswordDetailTitleTableViewCell.xib */; };
@@ -484,6 +495,8 @@
 		DC037CBA1E4DD47B00609409 /* TextFieldTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextFieldTableViewCell.xib; sourceTree = "<group>"; };
 		DC037CBD1E4ED4E100609409 /* TextViewTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewTableViewCell.swift; sourceTree = "<group>"; };
 		DC037CBE1E4ED4E100609409 /* TextViewTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextViewTableViewCell.xib; sourceTree = "<group>"; };
+		DC037CC11E4DD1A500609409 /* AgeKeyImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgeKeyImporter.swift; sourceTree = "<group>"; };
+		DC037CC31E4DD1A500609409 /* AgeKeyArmorImportTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgeKeyArmorImportTableViewController.swift; sourceTree = "<group>"; };
 		DC13B14E1E8640810097803F /* passTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = passTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC13B1521E8640810097803F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC193FF91E49B4430077E0A3 /* AdvancedSettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AdvancedSettingsTableViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -520,6 +533,11 @@
 		DCD3C65D1EFB9BB400CBE842 /* SettingsSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsSplitViewController.swift; sourceTree = "<group>"; };
 		DCDDEAAF1E4639F300F68193 /* LabelTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LabelTableViewCell.xib; sourceTree = "<group>"; };
 		DCDDEAB11E4896BF00F68193 /* PasswordDetailTitleTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasswordDetailTitleTableViewCell.swift; sourceTree = "<group>"; };
+		DCE93CAA2F01DDE7008F738B /* EncryptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EncryptionManager.swift; path = passKit/Crypto/EncryptionManager.swift; sourceTree = "<group>"; };
+		DCE93CAC2F01DE56008F738B /* GPGInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GPGInterface.swift; path = passKit/Crypto/GPGInterface.swift; sourceTree = "<group>"; };
+		DCE93CAD2F01DE56008F738B /* AgeInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AgeInterface.swift; path = passKit/Crypto/AgeInterface.swift; sourceTree = "<group>"; };
+		DCE93CAE2F01DE56008F738B /* EncryptionInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EncryptionInterface.swift; path = passKit/Crypto/EncryptionInterface.swift; sourceTree = "<group>"; };
+		DCE93CAF2F01DE56008F738B /* Age.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Age.swift; path = passKit/Crypto/Age.swift; sourceTree = "<group>"; };
 		DCFB779C1E4F40C7008DE471 /* FillPasswordTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FillPasswordTableViewCell.swift; sourceTree = "<group>"; };
 		DCFB779D1E4F40C7008DE471 /* FillPasswordTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FillPasswordTableViewCell.xib; sourceTree = "<group>"; };
 		DCFB77A21E500D9C008DE471 /* PasswordDetailTitleTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PasswordDetailTitleTableViewCell.xib; sourceTree = "<group>"; };
@@ -553,6 +571,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC7CBBBD2D0FA3F2003BB4D2 /* YubiKit in Frameworks */,
+				DCE93CA92F01D0CC008F738B /* AgeKit in Frameworks */,
 				9ADAB21D26DDA52400900F10 /* Gopenpgp.xcframework in Frameworks */,
 				30A3001426DA6692002A734E /* KeychainAccess in Frameworks */,
 				9A996C5726DDF65900A4485D /* Base32 in Frameworks */,
@@ -560,6 +579,7 @@
 				30333B2D2CF9252E008A2EA2 /* SVProgressHUD in Frameworks */,
 				30A3001626DA6697002A734E /* SwiftyUserDefaults in Frameworks */,
 				3032DA5626DAF4E500A7728C /* ObjectivePGP in Frameworks */,
+				30ED1777276F8842009BA876 /* ObjectiveGit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -596,16 +616,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC0A088A2F5DEABB00D9FE2B /* ObjectiveGit in Frameworks */,
 				5F9D7B0D27AF6F7500A8AB22 /* CryptoTokenKit.framework in Frameworks */,
 				3010CB6026DA4F87008964D2 /* SwiftyUserDefaults in Frameworks */,
 				30333B2B2CF924DC008A2EA2 /* SVProgressHUD in Frameworks */,
+				DCE93CA72F01D0C2008F738B /* AgeKit in Frameworks */,
 				3010CB6326DA4FE9008964D2 /* FavIcon in Frameworks */,
 				9A1F47FA26E5CF4B000C0E01 /* OneTimePassword in Frameworks */,
 				9A996C5326DDF61F00A4485D /* Base32 in Frameworks */,
 				3032DA5426DAF4C200A7728C /* ObjectivePGP in Frameworks */,
 				3010CB6626DA500F008964D2 /* KeychainAccess in Frameworks */,
 				9A996C5826DEB0D100A4485D /* passKit.framework in Frameworks */,
-				30ED1777276F8842009BA876 /* ObjectiveGit in Frameworks */,
+				DC0A08892F5DEABB00D9FE2B /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -968,6 +990,8 @@
 			children = (
 				DC037CB11E4CAB1700609409 /* AboutRepositoryTableViewController.swift */,
 				DC962CDE1E4B62C10033B5D8 /* AboutTableViewController.swift */,
+				DC037CC31E4DD1A500609409 /* AgeKeyArmorImportTableViewController.swift */,
+				DC037CC11E4DD1A500609409 /* AgeKeyImporter.swift */,
 				DC037CB71E4DD1A500609409 /* AddPasswordTableViewController.swift */,
 				DC193FF91E49B4430077E0A3 /* AdvancedSettingsTableViewController.swift */,
 				300713C42219D54100F553AC /* AutoCellHeightUITableViewController.swift */,
@@ -1047,6 +1071,11 @@
 		DC917BCA1E2E8231000FDF54 = {
 			isa = PBXGroup;
 			children = (
+				DCE93CAF2F01DE56008F738B /* Age.swift */,
+				DCE93CAD2F01DE56008F738B /* AgeInterface.swift */,
+				DCE93CAE2F01DE56008F738B /* EncryptionInterface.swift */,
+				DCE93CAC2F01DE56008F738B /* GPGInterface.swift */,
+				DCE93CAA2F01DDE7008F738B /* EncryptionManager.swift */,
 				DC917BD51E2E8231000FDF54 /* pass */,
 				A239F5972158C08C00576CBF /* passAutoFillExtension */,
 				A26700251EEC466A00176B8A /* passExtension */,
@@ -1174,6 +1203,7 @@
 				9A1D1CE426E5D1CE0052028E /* OneTimePassword */,
 				30333B2C2CF9252E008A2EA2 /* SVProgressHUD */,
 				DC7CBBBC2D0FA3F2003BB4D2 /* YubiKit */,
+				DCE93CA82F01D0CC008F738B /* AgeKit */,
 			);
 			productName = passKit;
 			productReference = A26075781EEC6F34005DB03E /* passKit.framework */;
@@ -1275,6 +1305,7 @@
 				9A1F47F926E5CF4B000C0E01 /* OneTimePassword */,
 				30ED1776276F8842009BA876 /* ObjectiveGit */,
 				30333B2A2CF924DC008A2EA2 /* SVProgressHUD */,
+				DCE93CA62F01D0C2008F738B /* AgeKit */,
 			);
 			productName = pass;
 			productReference = DC917BD31E2E8231000FDF54 /* Pass.app */;
@@ -1383,6 +1414,7 @@
 				307CB7522CF9219100D0931F /* XCRemoteSwiftPackageReference "SVProgressHUD" */,
 				30333B292CF922D9008A2EA2 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 				DC7CBBBB2D0FA3F2003BB4D2 /* XCRemoteSwiftPackageReference "yubikit-ios" */,
+				DCE93CA52F01D0A6008F738B /* XCRemoteSwiftPackageReference "AgeKit" */,
 			);
 			productRefGroup = DC917BD41E2E8231000FDF54 /* Products */;
 			projectDirPath = "";
@@ -1573,6 +1605,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCE93CB02F01DE56008F738B /* GPGInterface.swift in Sources */,
+				DCE93CB12F01DE56008F738B /* AgeInterface.swift in Sources */,
+				DCE93CB22F01DE56008F738B /* EncryptionInterface.swift in Sources */,
+				DCE93CB32F01DE56008F738B /* Age.swift in Sources */,
+				DCE93CAB2F01DDE7008F738B /* EncryptionManager.swift in Sources */,
 				30A1D2A221B2BC6F00E2D1F7 /* TokenBuilder.swift in Sources */,
 				30697C3C21F63C990064FCAC /* UITextFieldExtension.swift in Sources */,
 				302E85632125EE550031BA64 /* Constants.swift in Sources */,
@@ -1593,6 +1630,7 @@
 				3032327422C7F710009EBD9C /* KeyFileManager.swift in Sources */,
 				30CCA90B2325119C0048CA51 /* Data+Mutable.swift in Sources */,
 				A2AA934422DE30DD00D79A00 /* PGPAgent.swift in Sources */,
+				30CCA91823258E760048CA51 /* GopenPGPInterface.swift in Sources */,
 				30697C3B21F63C990064FCAC /* String+Localization.swift in Sources */,
 				302E85612125ECC70031BA64 /* Parser.swift in Sources */,
 				30B331772704DBEE00D64A99 /* NotificationCenterDispatcher.swift in Sources */,
@@ -1617,7 +1655,6 @@
 				30697C3D21F63C990064FCAC /* UIViewExtension.swift in Sources */,
 				30697C3A21F63C990064FCAC /* UIViewControllerExtension.swift in Sources */,
 				30697C2E21F63C5A0064FCAC /* Utils.swift in Sources */,
-				30CCA91823258E760048CA51 /* GopenPGPInterface.swift in Sources */,
 				9A2C7D8B2784139200BD9AF3 /* YubiKeyAPDU.swift in Sources */,
 				30697C4521F63CAB0064FCAC /* Password.swift in Sources */,
 				30697C4421F63CAB0064FCAC /* PasswordEntity.swift in Sources */,
@@ -1731,6 +1768,8 @@
 				DC037CB01E4CA51F00609409 /* GeneralSettingsTableViewController.swift in Sources */,
 				30695E2024FA6C6500C9D46E /* PasswordAlertPresenter.swift in Sources */,
 				DC037CB81E4DD1A500609409 /* AddPasswordTableViewController.swift in Sources */,
+				DC037CC41E4DD1A500609409 /* AgeKeyArmorImportTableViewController.swift in Sources */,
+				DC037CC21E4DD1A500609409 /* AgeKeyImporter.swift in Sources */,
 				DCC441521E8F6C06008A90C4 /* RawPasswordViewController.swift in Sources */,
 				DC917BD71E2E8231000FDF54 /* AppDelegate.swift in Sources */,
 				DC037CBB1E4DD47B00609409 /* TextFieldTableViewCell.swift in Sources */,
@@ -1895,7 +1934,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passShortcuts/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1931,7 +1970,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passShortcuts/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1999,7 +2038,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MARKETING_VERSION = 0.19.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -2031,7 +2070,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = pass/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2061,7 +2100,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2093,7 +2132,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2132,7 +2171,7 @@
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MARKETING_VERSION = "$(MARKETING_VERSION)";
@@ -2161,7 +2200,7 @@
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passKitTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2195,7 +2234,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passAutoFillExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2232,7 +2271,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passShortcuts/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2268,7 +2307,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passAutoFillExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2305,7 +2344,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passAutoFillExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2341,7 +2380,7 @@
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MARKETING_VERSION = "$(MARKETING_VERSION)";
@@ -2379,7 +2418,7 @@
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MARKETING_VERSION = "$(MARKETING_VERSION)";
@@ -2407,7 +2446,7 @@
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passKitTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2431,7 +2470,7 @@
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passKitTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2462,7 +2501,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2498,7 +2537,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2528,7 +2567,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2553,7 +2592,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = passTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2625,7 +2664,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MARKETING_VERSION = 0.19.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -2693,7 +2732,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MARKETING_VERSION = 0.19.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -2724,7 +2763,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = pass/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2757,7 +2796,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = pass/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2951,6 +2990,14 @@
 				minimumVersion = 4.7.0;
 			};
 		};
+		DCE93CA52F01D0A6008F738B /* XCRemoteSwiftPackageReference "AgeKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jamesog/AgeKit";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -3058,6 +3105,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DC7CBBBB2D0FA3F2003BB4D2 /* XCRemoteSwiftPackageReference "yubikit-ios" */;
 			productName = YubiKit;
+		};
+		DCE93CA62F01D0C2008F738B /* AgeKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DCE93CA52F01D0A6008F738B /* XCRemoteSwiftPackageReference "AgeKit" */;
+			productName = AgeKit;
+		};
+		DCE93CA82F01D0CC008F738B /* AgeKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DCE93CA52F01D0A6008F738B /* XCRemoteSwiftPackageReference "AgeKit" */;
+			productName = AgeKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 

@@ -148,6 +148,30 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ageKeyTableViewCell" textLabel="Age-Key-Label" detailTextLabel="Age-Key-Detail" style="IBUITableViewCellStyleValue1" id="Age-Key-Cell">
+                                        <rect key="frame" x="0.0" y="149.00000381469727" width="390" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Age-Key-Cell" id="Age-Key-Content">
+                                            <rect key="frame" x="0.0" y="0.0" width="371.66666666666669" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Age Key" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="Age-Key-Label">
+                                                    <rect key="frame" x="8" y="11.999999999999998" width="65.666666666666671" height="20.333333333333332"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Not Set" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="Age-Key-Detail">
+                                                    <rect key="frame" x="306.33333333333337" y="11.999999999999998" width="57.333333333333336" height="20.333333333333332"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <color key="textColor" systemColor="secondaryLabelColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="SECURITY" id="Cx7-e4-wCO">
@@ -234,9 +258,11 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Settings" id="WH4-7R-4TQ"/>
                     <connections>
+                        <outlet property="ageKeyTableViewCell" destination="Age-Key-Cell" id="Age-Key-Outlet"/>
                         <outlet property="passcodeTableViewCell" destination="6Y0-mj-qhA" id="vkI-h5-GRo"/>
                         <outlet property="passwordRepositoryTableViewCell" destination="2rc-ZW-XKd" id="aFq-K7-eIj"/>
                         <outlet property="pgpKeyTableViewCell" destination="1ze-MS-Xbj" id="hXe-eD-0R4"/>
+                        <segue destination="Age-Nav-Controller" kind="showDetail" identifier="setAgeKeyByASCIISegue" id="Age-ASCII-Segue"/>
                         <segue destination="ZUt-x1-TJu" kind="showDetail" identifier="setPGPKeyByURLSegue" id="qRF-S1-bqF"/>
                         <segue destination="ffY-rC-jhq" kind="showDetail" identifier="setPGPKeyByASCIISegue" id="mgi-Oe-i2X"/>
                         <segue destination="Ap7-WQ-eEv" kind="showDetail" identifier="setPGPKeyByFileSegue" id="mnn-a5-KNj"/>
@@ -1962,6 +1988,110 @@ Secret Question 1: What is your childhood best friend's most bizarre superhero f
                 <exit id="T4H-XT-sbN" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="6990" y="2967"/>
+        </scene>
+        <!--Age Key-->
+        <scene sceneID="Age-Import-Scene">
+            <objects>
+                <tableViewController id="Age-Import-VC" customClass="AgeKeyArmorImportTableViewController" customModule="Pass" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" id="Age-TableView">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <sections>
+                            <tableViewSection headerTitle="Age Public Key" id="Age-Public-Section">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="agePublicKeyCell" rowHeight="160" id="Age-Public-Cell">
+                                        <rect key="frame" x="0.0" y="36" width="390" height="160"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Age-Public-Cell" id="Age-Public-Content">
+                                            <rect key="frame" x="0.0" y="0.0" width="390" height="160"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Age-Public-TextView">
+                                                    <rect key="frame" x="27" y="11" width="303" height="138"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="8.5"/>
+                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="Age-Import-VC" id="Age-Public-Delegate"/>
+                                                    </connections>
+                                                </textView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="Age-Public-TextView" secondAttribute="trailing" constant="60" id="Age-Public-Trailing"/>
+                                                <constraint firstItem="Age-Public-TextView" firstAttribute="leading" secondItem="Age-Public-Content" secondAttribute="leading" constant="27" id="Age-Public-Leading"/>
+                                                <constraint firstItem="Age-Public-TextView" firstAttribute="top" secondItem="Age-Public-Content" secondAttribute="top" constant="11" id="Age-Public-Top"/>
+                                                <constraint firstAttribute="bottom" secondItem="Age-Public-TextView" secondAttribute="bottom" constant="11" id="Age-Public-Bottom"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Age Private Key" id="Age-Private-Section">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="agePrivateKeyCell" rowHeight="160" id="Age-Private-Cell">
+                                        <rect key="frame" x="0.0" y="232" width="390" height="160"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Age-Private-Cell" id="Age-Private-Content">
+                                            <rect key="frame" x="0.0" y="0.0" width="390" height="160"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Age-Private-TextView">
+                                                    <rect key="frame" x="27" y="11" width="303" height="138"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="8.5"/>
+                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="Age-Import-VC" id="Age-Private-Delegate"/>
+                                                    </connections>
+                                                </textView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="Age-Private-TextView" secondAttribute="trailing" constant="60" id="Age-Private-Trailing"/>
+                                                <constraint firstItem="Age-Private-TextView" firstAttribute="leading" secondItem="Age-Private-Content" secondAttribute="leading" constant="27" id="Age-Private-Leading"/>
+                                                <constraint firstItem="Age-Private-TextView" firstAttribute="top" secondItem="Age-Private-Content" secondAttribute="top" constant="11" id="Age-Private-Top"/>
+                                                <constraint firstAttribute="bottom" secondItem="Age-Private-TextView" secondAttribute="bottom" constant="11" id="Age-Private-Bottom"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Age Key" largeTitleDisplayMode="never" id="Age-Nav-Item">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="save" id="Age-Save-Button">
+                            <connections>
+                                <action selector="save:" destination="Age-Import-VC" id="Age-Save-Action"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="armorPublicKeyTextView" destination="Age-Public-TextView" id="Age-Public-Outlet"/>
+                        <outlet property="armorPrivateKeyTextView" destination="Age-Private-TextView" id="Age-Private-Outlet"/>
+                        <segue destination="Age-Exit" kind="unwind" identifier="saveAgeKeySegue" unwindAction="saveAgeKeyWithSegue:" id="Age-Unwind-Segue"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Age-First-Responder" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Age-Exit" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="5500" y="4500"/>
+        </scene>
+        <!--Age Navigation Controller-->
+        <scene sceneID="Age-Nav-Scene">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Age-Nav-Controller" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Age-Nav-Bar">
+                        <rect key="frame" x="0.0" y="47" width="390" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Age-Import-VC" kind="relationship" relationship="rootViewController" id="Age-Root-Segue"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Age-Nav-First-Responder" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4500" y="4500"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>

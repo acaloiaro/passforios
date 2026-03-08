@@ -39,9 +39,10 @@
 "CannotAddPassword"                                 = "Passwort kann nicht hinzugefügt werden";
 "WrongPassphrase"                                   = "Falsches Passwort";
 "MakeSurePgpAndGitProperlySet."                     = "Stelle bitte sicher, dass die Einstellungen für GPG-Schlüssel und Git-Server richtig sind.";
+"EncryptionBackendNotConfigured."                   = "Verschlüsselungs-Backend ist nicht konfiguriert. Bitte richten Sie Ihre PGP- oder Age-Schlüssel in den Einstellungen ein.";
 "RecoverySuggestion."                               = "Das falsche Passwort wurde entfernt. Bitte probiere es erneut.";
 "NSURLFileAllocatedSizeKeyShouldAlwaysReturnValue." = "Huh? NSURLFileAllocatedSizeKey sollte immer einen Wert liefern.";
-"NoProperPassRepo."                                 = "Das Repository enthält keine .gpg-id Datei. Es muss erst noch mit 'pass init' korrekt initialisiert werden, bevor es in die App geladen werden kann.";
+"NoProperPassRepo."                                 = "Das Repository enthält keine .gpg-id oder .age-recipients Datei. Es muss erst noch mit 'pass init' (für GPG) oder durch Erstellen einer .age-recipients Datei (für Age) korrekt initialisiert werden, bevor es in die App geladen werden kann.";
 
 // Settings
 "PasswordGeneratorFlavor"           = "Art";
@@ -132,7 +133,7 @@
 
 // PGP
 "Decrypting"                        = "Entschlüssele";
-"PgpKeyNotSet."                     = "PGP-Schlüssel ist nicht eingerichtet. Bitte gib ihn zuerst ein.";
+"EncryptionKeyNotSet."              = "Verschlüsselungsschlüssel ist nicht festgelegt. Bitte richten Sie zuerst Ihren Verschlüsselungsschlüssel ein.";
 "FillInPgpPassphrase."              = "Bitte gib das Passwort deines privaten PGP-Schlüssels ein.";
 "WantToSavePassphrase?"             = "Möchtest du das Passwort für spätere Entschlüsselungen speichern?";
 "CannotSavePgpKey"                  = "PGP-Schlüssel kann nicht gespeichert werden";
@@ -163,6 +164,7 @@
 
 // Git signature
 "NotSet"                = "Nicht spezifiziert";
+"Set"                   = "Gesetzt";
 "InvalidNameOrEmail"    = "Ungültiger Name oder E-Mail-Adresse";
 
 // Clear suggestions

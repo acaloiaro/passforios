@@ -16,7 +16,7 @@ import YubiKit
 func decryptPassword(
     in controller: UIViewController,
     with passwordPath: String,
-    using keyID: String? = nil,
+    using _: String? = nil,
     completion: @escaping ((Password) -> Void)
 ) {
     // YubiKey is not supported in extension
@@ -31,7 +31,7 @@ func decryptPassword(
     DispatchQueue.global(qos: .userInteractive).async {
         do {
             let requestPGPKeyPassphrase = Utils.createRequestPGPKeyPassphraseHandler(controller: controller)
-            let decryptedPassword = try PasswordStore.shared.decrypt(path: passwordPath, keyID: keyID, requestPGPKeyPassphrase: requestPGPKeyPassphrase)
+            let decryptedPassword = try PasswordStore.shared.decrypt(path: passwordPath, requestPassphrase: requestPGPKeyPassphrase)
 
             DispatchQueue.main.async {
                 completion(decryptedPassword)

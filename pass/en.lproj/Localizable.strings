@@ -40,12 +40,22 @@
 "CannotAddPassword"                                 = "Cannot add password";
 "WrongPassphrase"                                   = "Wrong passphrase";
 "MakeSurePgpAndGitProperlySet."                     = "Please make sure PGP key and Git server are properly set.";
+"EncryptionBackendNotConfigured."                   = "Encryption backend is not configured. Please set up your PGP or Age keys in Settings.";
 "RecoverySuggestion."                               = "Recovery suggestion: Wrong credential password/passphrase has been removed, please try again.";
 "NSURLFileAllocatedSizeKeyShouldAlwaysReturnValue." = "Huh? NSURLFileAllocatedSizeKey should always return a value.";
-"NoProperPassRepo."                                 = "The repository does not contain a .gpg-id file. Please set it up properly by performing 'pass init'. Then try again to load it into the app.";
+"NoProperPassRepo."                                 = "The repository does not contain a .gpg-id or .age-recipients file. Please set it up properly by performing 'pass init' (for GPG) or creating an .age-recipients file (for Age). Then try again to load it into the app.";
 
 // Settings
 "PasswordGeneratorFlavor"           = "Style";
+"PasswordGenerator"                 = "Password Generator";
+
+// Age
+"Age"                               = "Age";
+"AsciiArmorAgeKey"                  = "Age Key";
+"SetAgePublicKey."                  = "Please set the public Age key first.";
+"SetAgePrivateKey."                 = "Please set the private Age key first.";
+"FillInAgeKey."                     = "Fill in your Age public and private keys.";
+"RemoveAgeKeys"                     = "Remove Age Keys";
 "RememberPgpKeyPassphrase"          = "Remember PGP Key Passphrase";
 "RememberGitCredentialPassphrase"   = "Remember Git Credential Passphrase";
 "EnableGPGID"                       = "Enable .gpg-id (Beta)";
@@ -133,7 +143,7 @@
 
 // PGP
 "Decrypting"                        = "Decrypting";
-"PgpKeyNotSet."                     = "PGP Key is not set. Please set your PGP Key first.";
+"EncryptionKeyNotSet."              = "Encryption Key is not set. Please set your encryption key first.";
 "FillInPgpPassphrase."              = "Please fill in the passphrase of your PGP secret key.";
 "WantToSavePassphrase?"             = "Do you want to save the passphrase for later decryption?";
 "CannotSavePgpKey"                  = "Cannot Save PGP Key";
@@ -164,6 +174,7 @@
 
 // Git signature
 "NotSet"                = "Not Set";
+"Set"                   = "Set";
 "InvalidNameOrEmail"    = "Invalid name or e-mail";
 
 // Clear suggestions

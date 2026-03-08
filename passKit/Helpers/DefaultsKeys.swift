@@ -24,7 +24,7 @@ public extension DefaultsSerializable where Self: RawRepresentable {
 public var Defaults = DefaultsAdapter(defaults: UserDefaults(suiteName: Globals.groupIdentifier)!, keyStore: DefaultsKeys())
 
 public enum KeySource: String, DefaultsSerializable {
-    case url, armor, file, itunes
+    case url, armor, file, itunes, ageArmor
 }
 
 public enum GitAuthenticationMethod: String, DefaultsSerializable {
@@ -33,9 +33,12 @@ public enum GitAuthenticationMethod: String, DefaultsSerializable {
 
 extension SearchBarScope: DefaultsSerializable {}
 extension PasswordGenerator: DefaultsSerializable {}
+extension EncryptionManager.EncryptionBackend: DefaultsSerializable {}
 
 public extension DefaultsKeys {
+    var encryptionBackend: DefaultsKey<EncryptionManager.EncryptionBackend> { DefaultsKey("encryptionBackend", defaultValue: .gpg) }
     var pgpKeySource: DefaultsKey<KeySource?> { DefaultsKey("pgpKeySource") }
+    var ageKeySource: DefaultsKey<KeySource?> { DefaultsKey("ageKeySource") }
     var pgpPublicKeyURL: DefaultsKey<URL?> { DefaultsKey("pgpPublicKeyURL") }
     var pgpPrivateKeyURL: DefaultsKey<URL?> { DefaultsKey("pgpPrivateKeyURL") }
     var isYubiKeyEnabled: DefaultsKey<Bool> { DefaultsKey("isYubiKeyEnabled", defaultValue: false) }

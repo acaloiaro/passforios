@@ -8,10 +8,10 @@
 
 import passKit
 
-func encryptPassword(in controller: UIViewController, with password: Password, keyID: String? = nil, completion: @escaping (() -> Void)) {
+func encryptPassword(in controller: UIViewController, with password: Password, keyID _: String? = nil, completion: @escaping (() -> Void)) {
     DispatchQueue.global(qos: .userInitiated).async {
         do {
-            _ = try PasswordStore.shared.add(password: password, keyID: keyID)
+            _ = try PasswordStore.shared.add(password: password, path: password.path)
             DispatchQueue.main.async {
                 completion()
             }

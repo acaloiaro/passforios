@@ -110,7 +110,7 @@ class PasswordDetailTableViewController: UITableViewController, UIGestureRecogni
         }
     }
 
-    private func decryptThenShowPasswordLocalKey(keyID: String? = nil) {
+    private func decryptThenShowPasswordLocalKey(keyID _: String? = nil) {
         guard let passwordEntity else {
             Utils.alert(title: "CannotShowPassword".localize(), message: "PasswordDoesNotExist".localize(), controller: self, completion: {
                 self.navigationController!.popViewController(animated: true)
@@ -121,7 +121,7 @@ class PasswordDetailTableViewController: UITableViewController, UIGestureRecogni
             // decrypt password
             do {
                 let requestPGPKeyPassphrase = Utils.createRequestPGPKeyPassphraseHandler(controller: self)
-                self.password = try self.passwordStore.decrypt(passwordEntity: passwordEntity, keyID: keyID, requestPGPKeyPassphrase: requestPGPKeyPassphrase)
+                self.password = try self.passwordStore.decrypt(passwordEntity: passwordEntity, requestPassphrase: requestPGPKeyPassphrase)
                 self.showPassword()
             } catch let AppError.pgpPrivateKeyNotFound(keyID: key) {
                 DispatchQueue.main.async {
@@ -209,10 +209,10 @@ class PasswordDetailTableViewController: UITableViewController, UIGestureRecogni
         }
     }
 
-    private func saveEditPassword(password: Password, keyID: String? = nil) {
+    private func saveEditPassword(password: Password, keyID _: String? = nil) {
         SVProgressHUD.show(withStatus: "Saving".localize())
         do {
-            passwordEntity = try passwordStore.edit(passwordEntity: passwordEntity!, password: password, keyID: keyID)
+            passwordEntity = try passwordStore.edit(passwordEntity: passwordEntity!, password: password, path: password.path)
             setTableData()
             tableView.reloadData()
             SVProgressHUD.showSuccess(withStatus: "Success".localize())
@@ -388,7 +388,7 @@ class PasswordDetailTableViewController: UITableViewController, UIGestureRecogni
         // commit the change of HOTP counter
         if password!.changed != 0 {
             do {
-                passwordEntity = try passwordStore.edit(passwordEntity: passwordEntity!, password: password!)
+                passwordEntity = try passwordStore.edit(passwordEntity: passwordEntity!, password: password!, path: password!.path)
                 SVProgressHUD.showSuccess(withStatus: "PasswordCopied".localize() | "CounterUpdated".localize())
                 SVProgressHUD.dismiss(withDelay: 1)
             } catch {
