@@ -134,6 +134,7 @@ public class PasswordStore {
             throw (error)
         }
         Defaults.lastSyncedTime = Date()
+        ensureAgeRecipient()
         DispatchQueue.main.async {
             self.deleteCoreData()
             self.initPasswordEntityCoreData()
@@ -150,6 +151,7 @@ public class PasswordStore {
         }
         try gitRepository.pull(options: options, transferProgressBlock: progressBlock)
         Defaults.lastSyncedTime = Date()
+        ensureAgeRecipient()
         setAllSynced()
         DispatchQueue.main.async {
             self.deleteCoreData()
@@ -224,6 +226,7 @@ public class PasswordStore {
         guard let gitRepository else {
             throw AppError.repositoryNotSet
         }
+        ensureAgeRecipient()
         try gitRepository.push(options: options, transferProgressBlock: transferProgressBlock)
     }
 
@@ -261,10 +264,10 @@ public class PasswordStore {
         return parentPasswordEntity
     }
 
-    public func add(password: Password, keyID: String? = nil) throws -> PasswordEntity? {
+    public func add(password: Password, path: String) throws -> PasswordEntity? {
         let saveURL = password.fileURL(in: storeURL)
         try createDirectoryTree(at: saveURL)
-        try encrypt(password: password, keyID: keyID).write(to: saveURL)
+        try encrypt(password: password, path: path).write(to: saveURL)
         try gitAdd(path: password.path)
         try gitCommit(message: "AddPassword.".localize(password.path))
         let newPasswordEntity = try addPasswordEntities(password: password)
@@ -282,12 +285,12 @@ public class PasswordStore {
         notificationCenter.post(name: .passwordStoreUpdated, object: nil)
     }
 
-    public func edit(passwordEntity: PasswordEntity, password: Password, keyID: String? = nil) throws -> PasswordEntity? {
+    public func edit(passwordEntity: PasswordEntity, password: Password, path: String) throws -> PasswordEntity? {
         var newPasswordEntity: PasswordEntity? = passwordEntity
         let url = passwordEntity.fileURL(in: storeURL)
 
         if password.changed & PasswordChange.content.rawValue != 0 {
-            try encrypt(password: password, keyID: keyID).write(to: url)
+            try encrypt(password: password, path: path).write(to: url)
             try gitAdd(path: password.path)
             try gitCommit(message: "EditPassword.".localize(passwordEntity.path))
             newPasswordEntity = passwordEntity
@@ -355,7 +358,7 @@ public class PasswordStore {
 
         // Delete cache explicitly.
         PasscodeLock.shared.delete()
-        PGPAgent.shared.uninitKeys()
+        EncryptionManager.shared.uninitKeys()
     }
 
     // return the number of discarded commits
@@ -381,16 +384,10 @@ public class PasswordStore {
         return try gitRepository.getLocalCommits()
     }
 
-    public func decrypt(passwordEntity: PasswordEntity, keyID: String? = nil, requestPGPKeyPassphrase: @escaping (String) -> String) throws -> Password {
+    public func decrypt(passwordEntity: PasswordEntity, requestPassphrase: @escaping (String) -> String) throws -> Password {
         let url = passwordEntity.fileURL(in: storeURL)
         let encryptedData = try Data(contentsOf: url)
-        let data: Data? = try {
-            if Defaults.isEnableGPGIDOn {
-                let keyID = keyID ?? findGPGID(from: url)
-                return try PGPAgent.shared.decrypt(encryptedData: encryptedData, keyID: keyID, requestPGPKeyPassphrase: requestPGPKeyPassphrase)
-            }
-            return try PGPAgent.shared.decrypt(encryptedData: encryptedData, requestPGPKeyPassphrase: requestPGPKeyPassphrase)
-        }()
+        let data: Data? = try EncryptionManager.shared.decrypt(encryptedData: encryptedData, path: passwordEntity.path, requestPassphrase: requestPassphrase)
         guard let decryptedData = data else {
             throw AppError.decryption
         }
@@ -398,23 +395,54 @@ public class PasswordStore {
         return Password(name: passwordEntity.name, path: passwordEntity.path, plainText: plainText)
     }
 
-    public func decrypt(path: String, keyID: String? = nil, requestPGPKeyPassphrase: @escaping (String) -> String) throws -> Password {
+    public func decrypt(path: String, requestPassphrase: @escaping (String) -> String) throws -> Password {
         guard let passwordEntity = fetchPasswordEntity(with: path) else {
             throw AppError.decryption
         }
-        if Defaults.isEnableGPGIDOn {
-            return try decrypt(passwordEntity: passwordEntity, keyID: keyID, requestPGPKeyPassphrase: requestPGPKeyPassphrase)
-        }
-        return try decrypt(passwordEntity: passwordEntity, requestPGPKeyPassphrase: requestPGPKeyPassphrase)
+        return try decrypt(passwordEntity: passwordEntity, requestPassphrase: requestPassphrase)
     }
 
-    public func encrypt(password: Password, keyID: String? = nil) throws -> Data {
-        let encryptedDataPath = password.fileURL(in: storeURL)
-        let keyID = keyID ?? findGPGID(from: encryptedDataPath)
-        if Defaults.isEnableGPGIDOn {
-            return try PGPAgent.shared.encrypt(plainData: password.plainData, keyID: keyID)
+    public func encrypt(password: Password, path: String) throws -> Data {
+        try EncryptionManager.shared.encrypt(plainData: password.plainData, path: path)
+    }
+
+    /// If the encryption backend is age, ensures the user's public key is listed
+    /// in the root `.age-recipients` file. Adds and commits it if missing.
+    public func ensureAgeRecipient() {
+        guard Defaults.encryptionBackend == .age else {
+            return
         }
-        return try PGPAgent.shared.encrypt(plainData: password.plainData)
+        guard let privateKeyString = AppKeychain.shared.get(for: AgeKey.PRIVATE.getKeychainKey()) else {
+            return
+        }
+        guard let publicKey = try? Age.derivePublicKey(from: privateKeyString) else {
+            return
+        }
+
+        let recipientsURL = storeURL.appendingPathComponent(".age-recipients")
+        let existingRecipients: [String]
+        if let contents = try? String(contentsOf: recipientsURL, encoding: .utf8) {
+            existingRecipients = contents.splitByNewline()
+                .map(\.trimmed)
+                .filter { !$0.isEmpty && !$0.hasPrefix("#") }
+        } else {
+            existingRecipients = []
+        }
+
+        guard !existingRecipients.contains(publicKey) else {
+            return
+        }
+
+        // Append the public key, ensuring it starts on a new line
+        var content = (try? String(contentsOf: recipientsURL, encoding: .utf8)) ?? ""
+        if !content.isEmpty, !content.hasSuffix("\n") {
+            content += "\n"
+        }
+        content += publicKey + "\n"
+
+        guard let _ = try? content.write(to: recipientsURL, atomically: true, encoding: .utf8),
+              let _ = try? gitAdd(path: ".age-recipients"),
+              let _ = try? gitCommit(message: "Add age recipient from Pass for iOS") else { return }
     }
 
     public func removeGitSSHKeys() {
@@ -456,15 +484,4 @@ extension PasswordStore {
         }
         return try gitRepository.commit(signature: gitSignatureForNow, message: message)
     }
-}
-
-func findGPGID(from url: URL) -> String {
-    var path = url
-    while !FileManager.default.fileExists(atPath: path.appendingPathComponent(".gpg-id").path),
-          path.path != "file:///" {
-        path = path.deletingLastPathComponent()
-    }
-    path = path.appendingPathComponent(".gpg-id")
-
-    return (try? String(contentsOf: path))?.trimmed ?? ""
 }

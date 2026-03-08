@@ -40,12 +40,34 @@
 "CannotAddPassword"                                 = "Cannot add password";
 "WrongPassphrase"                                   = "Wrong passphrase";
 "MakeSurePgpAndGitProperlySet."                     = "Please make sure PGP key and Git server are properly set.";
+"EncryptionBackendNotConfigured."                   = "Encryption backend is not configured. Please set up your PGP or Age keys in Settings.";
 "RecoverySuggestion."                               = "Recovery suggestion: Wrong credential password/passphrase has been removed, please try again.";
 "NSURLFileAllocatedSizeKeyShouldAlwaysReturnValue." = "Huh? NSURLFileAllocatedSizeKey should always return a value.";
-"NoProperPassRepo."                                 = "The repository does not contain a .gpg-id file. Please set it up properly by performing 'pass init'. Then try again to load it into the app.";
+"NoProperPassRepo."                                 = "The repository does not contain a .gpg-id or .age-recipients file. Please set it up properly by performing 'pass init' (for GPG) or creating an .age-recipients file (for Age). Then try again to load it into the app.";
 
 // Settings
 "PasswordGeneratorFlavor"           = "Style";
+"PasswordGenerator"                 = "Password Generator";
+
+// Age
+"Age"                               = "Age";
+"AsciiArmorAgeKey"                  = "Age Key";
+"SetAgePrivateKey."                 = "Please set the private Age key first.";
+"FillInAgeKey."                     = "Fill in your Age private key. The public key will be automatically derived.";
+"RemoveAgeKeys"                     = "Remove Age Keys";
+"GenerateAgeKey"                    = "Generate Age Key";
+"GeneratingAgeKey."                 = "Generating Age Key...";
+"AgeKeyGenerated"                   = "Age Key Generated";
+"PublicKey"                         = "Public Key";
+"ReplaceAgeKey"                     = "Replace Age Key?";
+"AgeKeyWarning."                    = "WARNING! Any passwords encrypted with your current Age key will become inaccessible. Make sure you have backups!";
+"AgeKeyInvalidPrefix."              = "Age private key must start with '%@'. Please check the key format.";
+"AgeKeyInvalidFormat."              = "Invalid Age private key format: %@";
+"CopyPublicKey"                     = "Copy Public Key";
+"PublicKeyCopied."                  = "Public key copied to clipboard";
+"Replace"                           = "Replace";
+"DerivedPublicKey"                  = "Public Key";
+"PublicKeyAutomatic."               = "Your public key is automatically calculated from your private key.";
 "RememberPgpKeyPassphrase"          = "Remember PGP Key Passphrase";
 "RememberGitCredentialPassphrase"   = "Remember Git Credential Passphrase";
 "EnableGPGID"                       = "Enable .gpg-id (Beta)";
@@ -78,6 +100,8 @@
 "GitPushNotSuccessfulError."            = "Pushing local changes was not successful. Make sure there are no uncommitted changes on the remote repository.";
 "WrongPasswordFilenameError."           = "Cannot write to the password file.";
 "DecryptionError."                      = "Cannot decrypt password.";
+"DecryptionKeyMismatchError."           = "This password was encrypted for a different key.";
+"DecryptionSizeExceededError."          = "Decrypted file exceeds maximum size (1MB).";
 "EncodingError."                        = "Key is not ASCII encoded.";
 "UnknownError."                         = "Unknown error.";
 "PrepareRepository"                     = "Prepare Repository";
@@ -133,7 +157,7 @@
 
 // PGP
 "Decrypting"                        = "Decrypting";
-"PgpKeyNotSet."                     = "PGP Key is not set. Please set your PGP Key first.";
+"EncryptionKeyNotSet."              = "Encryption Key is not set. Please set your encryption key first.";
 "FillInPgpPassphrase."              = "Please fill in the passphrase of your PGP secret key.";
 "WantToSavePassphrase?"             = "Do you want to save the passphrase for later decryption?";
 "CannotSavePgpKey"                  = "Cannot Save PGP Key";
@@ -147,6 +171,7 @@
 "WrongPassphraseError."             = "Passphrase of your PGP secret key is wrong.";
 "PgpPublicKeyNotFoundError."        = "PGP public key (%@) not found.";
 "PgpPrivateKeyNotFoundError."       = "PGP private key (%@) not found.";
+"GpgIDMultipleRecipientsError."     = "Your .gpg-id file lists %d recipients, but this app can only encrypt for one. The other recipients will be unable to decrypt this password.";
 "CannotImportFile"                  = "Cannot Import File";
 "LoadFromFiles"                     = "Load From File";
 "FileCannotBeImported."             = "An error occurred importing the file '%@'. Please make sure its location is readable.";
@@ -164,6 +189,7 @@
 
 // Git signature
 "NotSet"                = "Not Set";
+"Set"                   = "Set";
 "InvalidNameOrEmail"    = "Invalid name or e-mail";
 
 // Clear suggestions

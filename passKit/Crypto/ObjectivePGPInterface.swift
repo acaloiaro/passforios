@@ -25,7 +25,15 @@ struct ObjectivePGPInterface: PGPInterface {
     }
 
     func decrypt(encryptedData: Data, keyID _: String?, passphrase: String) throws -> Data? {
+        try decrypt(encryptedData: encryptedData, passphrase: passphrase)
+    }
+
+    func decrypt(encryptedData: Data, passphrase: String) throws -> Data? {
         try ObjectivePGP.decrypt(encryptedData, andVerifySignature: false, using: keyring.keys) { _ in passphrase }
+    }
+
+    func decrypt(encryptedData: Data) throws -> Data? {
+        try decrypt(encryptedData: encryptedData, passphrase: "")
     }
 
     func encrypt(plainData: Data, keyID _: String?) throws -> Data {
@@ -35,6 +43,18 @@ struct ObjectivePGPInterface: PGPInterface {
         }
         return encryptedData
     }
+
+    func encrypt(plainData: Data, recipient _: String) throws -> Data {
+        try encrypt(plainData: plainData, keyID: nil)
+    }
+
+    var recipientsFilename: String { ".gpg-id" }
+
+    func containsRecipient(_ recipient: String) -> Bool {
+        containsPrivateKey(with: recipient)
+    }
+
+    var fallbackRecipient: String? { keyring.keys.first?.keyID.longIdentifier }
 
     func containsPublicKey(with keyID: String) -> Bool {
         keyring.findKey(keyID)?.isPublic ?? false

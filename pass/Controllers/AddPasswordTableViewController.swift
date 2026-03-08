@@ -20,9 +20,9 @@ class AddPasswordTableViewController: PasswordEditorTableViewController {
     override func shouldPerformSegue(withIdentifier identifier: String, sender _: Any?) -> Bool {
         if identifier == "saveAddPasswordSegue" {
             // check PGP key
-            guard PGPAgent.shared.isPrepared else {
+            guard EncryptionManager.shared.isPrepared else {
                 let alertTitle = "CannotAddPassword".localize()
-                let alertMessage = "PgpKeyNotSet.".localize()
+                let alertMessage = "EncryptionBackendNotConfigured.".localize()
                 Utils.alert(title: alertTitle, message: alertMessage, controller: self, completion: nil)
                 return false
             }

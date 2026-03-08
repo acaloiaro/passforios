@@ -347,12 +347,12 @@ extension PasswordNavigationViewController {
 
     override func shouldPerformSegue(withIdentifier identifier: String, sender _: Any?) -> Bool {
         if identifier == "showPasswordDetail" {
-            guard Defaults.isYubiKeyEnabled || PGPAgent.shared.isPrepared else {
-                Utils.alert(title: "CannotShowPassword".localize(), message: "PgpKeyNotSet.".localize(), controller: self)
+            guard Defaults.isYubiKeyEnabled || EncryptionManager.shared.isPrepared else {
+                Utils.alert(title: "CannotShowPassword".localize(), message: "EncryptionKeyNotSet.".localize(), controller: self)
                 return false
             }
         } else if identifier == "addPasswordSegue" {
-            guard PGPAgent.shared.isPrepared, PasswordStore.shared.gitRepository != nil else {
+            guard EncryptionManager.shared.isPrepared, PasswordStore.shared.gitRepository != nil else {
                 Utils.alert(title: "CannotAddPassword".localize(), message: "MakeSurePgpAndGitProperlySet.".localize(), controller: self)
                 return false
             }
